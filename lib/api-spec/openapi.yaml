@@ -3,20 +3,37 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: PharmLink - Pharmacy Employment Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication and registration
+  - name: candidates
+    description: Candidate (job seeker) operations
+  - name: employers
+    description: Employer (pharmacy) operations
+  - name: jobs
+    description: Job listings
+  - name: applications
+    description: Job applications
+  - name: offers
+    description: Direct job offers from employers
+  - name: notifications
+    description: In-app notifications
+  - name: admin
+    description: Admin dashboard operations
+  - name: packages
+    description: Subscription packages
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +41,1273 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Auth
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+
+  # Candidates
+  /candidates:
+    get:
+      operationId: listCandidates
+      tags: [candidates]
+      summary: List candidates (for employers to browse)
+      parameters:
+        - in: query
+          name: governorate
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: specialization
+          schema: { type: string }
+        - in: query
+          name: availableNow
+          schema: { type: boolean }
+        - in: query
+          name: maxDistanceKm
+          schema: { type: integer }
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        "200":
+          description: List of candidates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateListResponse"
+
+  /candidates/{id}:
+    get:
+      operationId: getCandidate
+      tags: [candidates]
+      summary: Get candidate profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Candidate profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateProfile"
+        "404":
+          description: Not found
+
+  /candidates/me:
+    get:
+      operationId: getMyCandidateProfile
+      tags: [candidates]
+      summary: Get my candidate profile
+      responses:
+        "200":
+          description: My candidate profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateProfile"
+    put:
+      operationId: updateCandidateProfile
+      tags: [candidates]
+      summary: Update candidate profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CandidateProfileInput"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateProfile"
+
+  /candidates/me/availability:
+    patch:
+      operationId: toggleCandidateAvailability
+      tags: [candidates]
+      summary: Toggle available for work status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AvailabilityInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateProfile"
+
+  /candidates/me/stats:
+    get:
+      operationId: getCandidateStats
+      tags: [candidates]
+      summary: Get candidate dashboard stats
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateStats"
+
+  # Employers
+  /employers:
+    get:
+      operationId: listEmployers
+      tags: [employers]
+      summary: List pharmacies/employers
+      parameters:
+        - in: query
+          name: governorate
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        "200":
+          description: List of employers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerListResponse"
+
+  /employers/{id}:
+    get:
+      operationId: getEmployer
+      tags: [employers]
+      summary: Get employer/pharmacy profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Employer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerProfile"
+        "404":
+          description: Not found
+
+  /employers/me:
+    get:
+      operationId: getMyEmployerProfile
+      tags: [employers]
+      summary: Get my employer profile
+      responses:
+        "200":
+          description: My employer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerProfile"
+    put:
+      operationId: updateEmployerProfile
+      tags: [employers]
+      summary: Update employer profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployerProfileInput"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerProfile"
+
+  /employers/me/stats:
+    get:
+      operationId: getEmployerStats
+      tags: [employers]
+      summary: Get employer dashboard stats
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerStats"
+
+  /employers/me/shortlist:
+    get:
+      operationId: getShortlist
+      tags: [employers]
+      summary: Get shortlisted candidates
+      responses:
+        "200":
+          description: Shortlisted candidates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CandidateProfile"
+
+  /employers/me/shortlist/{candidateId}:
+    post:
+      operationId: addToShortlist
+      tags: [employers]
+      summary: Add candidate to shortlist
+      parameters:
+        - in: path
+          name: candidateId
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShortlistEntry"
+    delete:
+      operationId: removeFromShortlist
+      tags: [employers]
+      summary: Remove candidate from shortlist
+      parameters:
+        - in: path
+          name: candidateId
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Removed
+
+  # Jobs
+  /jobs:
+    get:
+      operationId: listJobs
+      tags: [jobs]
+      summary: List job postings
+      parameters:
+        - in: query
+          name: governorate
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: specialization
+          schema: { type: string }
+        - in: query
+          name: jobType
+          schema: { type: string }
+        - in: query
+          name: isEmergency
+          schema: { type: boolean }
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        "200":
+          description: List of jobs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobListResponse"
+
+    post:
+      operationId: createJob
+      tags: [jobs]
+      summary: Create a job posting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+
+  /jobs/{id}:
+    get:
+      operationId: getJob
+      tags: [jobs]
+      summary: Get job posting
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Job posting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "404":
+          description: Not found
+
+    patch:
+      operationId: updateJob
+      tags: [jobs]
+      summary: Update job posting
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+
+    delete:
+      operationId: deleteJob
+      tags: [jobs]
+      summary: Delete job posting
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Deleted
+
+  /jobs/nearby:
+    get:
+      operationId: getNearbyJobs
+      tags: [jobs]
+      summary: Get nearby jobs for a candidate (wow endpoint)
+      parameters:
+        - in: query
+          name: lat
+          schema: { type: number }
+        - in: query
+          name: lng
+          schema: { type: number }
+        - in: query
+          name: radiusKm
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Nearby jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Job"
+
+  /jobs/emergency:
+    post:
+      operationId: createEmergencyShift
+      tags: [jobs]
+      summary: Post an emergency shift (one-tap)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmergencyShiftInput"
+      responses:
+        "201":
+          description: Emergency shift created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+
+  # Applications
+  /applications:
+    get:
+      operationId: listApplications
+      tags: [applications]
+      summary: List applications (for candidate or employer depending on token)
+      responses:
+        "200":
+          description: Applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+
+    post:
+      operationId: createApplication
+      tags: [applications]
+      summary: Apply to a job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationInput"
+      responses:
+        "201":
+          description: Applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "429":
+          description: Quota exceeded
+
+  /applications/{id}:
+    get:
+      operationId: getApplication
+      tags: [applications]
+      summary: Get application detail
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+    patch:
+      operationId: updateApplicationStatus
+      tags: [applications]
+      summary: Update application status (employer action)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationStatusUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+  # Offers
+  /offers:
+    get:
+      operationId: listOffers
+      tags: [offers]
+      summary: List direct offers received or sent
+      responses:
+        "200":
+          description: Offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Offer"
+
+    post:
+      operationId: createOffer
+      tags: [offers]
+      summary: Send a direct job offer to a candidate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferInput"
+      responses:
+        "201":
+          description: Offer sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Offer"
+        "429":
+          description: Daily/monthly offer quota exceeded
+
+  /offers/{id}/respond:
+    patch:
+      operationId: respondToOffer
+      tags: [offers]
+      summary: Accept or reject a direct offer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferResponse"
+      responses:
+        "200":
+          description: Responded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Offer"
+
+  # Notifications
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: List notifications for current user
+      responses:
+        "200":
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /notifications/{id}/read:
+    patch:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark a notification as read
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Marked read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+
+  /notifications/read-all:
+    patch:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "200":
+          description: All marked read
+
+  # Packages
+  /packages:
+    get:
+      operationId: listPackages
+      tags: [packages]
+      summary: List subscription packages
+      responses:
+        "200":
+          description: Packages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Package"
+
+  /packages/subscribe:
+    post:
+      operationId: subscribeToPackage
+      tags: [packages]
+      summary: Subscribe to a package
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PackageSubscriptionInput"
+      responses:
+        "200":
+          description: Subscribed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSubscription"
+
+  /packages/my-subscription:
+    get:
+      operationId: getMySubscription
+      tags: [packages]
+      summary: Get current subscription info
+      responses:
+        "200":
+          description: Subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSubscription"
+
+  # Admin
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get platform-wide admin stats (KPIs)
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/users:
+    get:
+      operationId: listAdminUsers
+      tags: [admin]
+      summary: List all users
+      parameters:
+        - in: query
+          name: role
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserListResponse"
+
+  /admin/verification-queue:
+    get:
+      operationId: getVerificationQueue
+      tags: [admin]
+      summary: Get candidates pending verification
+      responses:
+        "200":
+          description: Verification queue
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CandidateProfile"
+
+  /admin/verify/{candidateId}:
+    patch:
+      operationId: verifyCandidateCredentials
+      tags: [admin]
+      summary: Verify or reject a candidate's credentials
+      parameters:
+        - in: path
+          name: candidateId
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerificationInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateProfile"
+
+  /admin/subscriptions-breakdown:
+    get:
+      operationId: getSubscriptionsBreakdown
+      tags: [admin]
+      summary: Get subscription counts per package
+      responses:
+        "200":
+          description: Breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubscriptionBreakdown"
+
+  /admin/activity-by-region:
+    get:
+      operationId: getActivityByRegion
+      tags: [admin]
+      summary: Get platform activity grouped by region
+      responses:
+        "200":
+          description: Regional activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RegionalActivity"
+
 components:
   schemas:
     HealthStatus:
       type: object
       properties:
-        status:
-          type: string
-      required:
-        - status
+        status: { type: string }
+      required: [status]
 
+    # Auth
+    RegisterInput:
+      type: object
+      required: [email, password, role, fullName]
+      properties:
+        email: { type: string }
+        password: { type: string, minLength: 6 }
+        role: { type: string, enum: [candidate, employer, admin] }
+        fullName: { type: string }
+        phone: { type: ["string", "null"] }
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token: { type: string }
+        user:
+          $ref: "#/components/schemas/User"
+
+    User:
+      type: object
+      required: [id, email, role, fullName, createdAt]
+      properties:
+        id: { type: integer }
+        email: { type: string }
+        role: { type: string, enum: [candidate, employer, admin] }
+        fullName: { type: string }
+        phone: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    # Candidate
+    CandidateProfile:
+      type: object
+      required: [id, userId, fullName, governorate, city, specialization, yearsExperience, availableForWork, profileCompletionPct, isVerified, createdAt]
+      properties:
+        id: { type: integer }
+        userId: { type: integer }
+        fullName: { type: string }
+        email: { type: ["string", "null"] }
+        phone: { type: ["string", "null"] }
+        whatsapp: { type: ["string", "null"] }
+        dateOfBirth: { type: ["string", "null"] }
+        gender: { type: ["string", "null"] }
+        governorate: { type: string }
+        city: { type: string }
+        address: { type: ["string", "null"] }
+        university: { type: ["string", "null"] }
+        faculty: { type: ["string", "null"] }
+        graduationYear: { type: ["integer", "null"] }
+        grade: { type: ["string", "null"] }
+        specialization: { type: string }
+        yearsExperience: { type: integer }
+        previousWorkplaces: { type: ["string", "null"] }
+        pharmacySkills: { type: ["string", "null"] }
+        computerSkills: { type: ["string", "null"] }
+        communicationSkills: { type: ["string", "null"] }
+        certifications: { type: ["string", "null"] }
+        courses: { type: ["string", "null"] }
+        availableForWork: { type: boolean }
+        preferredShift: { type: ["string", "null"] }
+        jobType: { type: ["string", "null"] }
+        maxDistanceKm: { type: ["integer", "null"] }
+        profilePicture: { type: ["string", "null"] }
+        personalSummary: { type: ["string", "null"] }
+        cvUrl: { type: ["string", "null"] }
+        lat: { type: ["number", "null"] }
+        lng: { type: ["number", "null"] }
+        profileCompletionPct: { type: integer }
+        isVerified: { type: boolean }
+        verificationBadge: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    CandidateProfileInput:
+      type: object
+      properties:
+        fullName: { type: string }
+        phone: { type: string }
+        whatsapp: { type: string }
+        dateOfBirth: { type: string }
+        gender: { type: string }
+        governorate: { type: string }
+        city: { type: string }
+        address: { type: string }
+        university: { type: string }
+        faculty: { type: string }
+        graduationYear: { type: integer }
+        grade: { type: string }
+        specialization: { type: string }
+        yearsExperience: { type: integer }
+        previousWorkplaces: { type: string }
+        pharmacySkills: { type: string }
+        computerSkills: { type: string }
+        communicationSkills: { type: string }
+        certifications: { type: string }
+        courses: { type: string }
+        preferredShift: { type: string }
+        jobType: { type: string }
+        maxDistanceKm: { type: integer }
+        profilePicture: { type: string }
+        personalSummary: { type: string }
+        cvUrl: { type: string }
+        lat: { type: number }
+        lng: { type: number }
+
+    CandidateListResponse:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CandidateProfile"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    AvailabilityInput:
+      type: object
+      required: [availableForWork]
+      properties:
+        availableForWork: { type: boolean }
+
+    CandidateStats:
+      type: object
+      required: [profileCompletionPct, dailyApplicationsUsed, dailyApplicationsLimit, monthlyApplicationsUsed, monthlyApplicationsLimit, totalApplications, pendingApplications, acceptedApplications, rejectedApplications, unreadOffers]
+      properties:
+        profileCompletionPct: { type: integer }
+        dailyApplicationsUsed: { type: integer }
+        dailyApplicationsLimit: { type: integer }
+        monthlyApplicationsUsed: { type: integer }
+        monthlyApplicationsLimit: { type: integer }
+        totalApplications: { type: integer }
+        pendingApplications: { type: integer }
+        acceptedApplications: { type: integer }
+        rejectedApplications: { type: integer }
+        unreadOffers: { type: integer }
+
+    # Employer
+    EmployerProfile:
+      type: object
+      required: [id, userId, name, isGroup, governorate, city, profileCompletionPct, createdAt]
+      properties:
+        id: { type: integer }
+        userId: { type: integer }
+        name: { type: string }
+        ownerName: { type: ["string", "null"] }
+        isGroup: { type: boolean }
+        branchCount: { type: ["integer", "null"] }
+        governorate: { type: string }
+        city: { type: string }
+        address: { type: ["string", "null"] }
+        nearbyLandmark: { type: ["string", "null"] }
+        phone: { type: ["string", "null"] }
+        whatsapp: { type: ["string", "null"] }
+        alternatePhone: { type: ["string", "null"] }
+        mapsLink: { type: ["string", "null"] }
+        lat: { type: ["number", "null"] }
+        lng: { type: ["number", "null"] }
+        logoUrl: { type: ["string", "null"] }
+        description: { type: ["string", "null"] }
+        yearEstablished: { type: ["integer", "null"] }
+        profileCompletionPct: { type: integer }
+        createdAt: { type: string }
+
+    EmployerProfileInput:
+      type: object
+      properties:
+        name: { type: string }
+        ownerName: { type: string }
+        isGroup: { type: boolean }
+        branchCount: { type: integer }
+        governorate: { type: string }
+        city: { type: string }
+        address: { type: string }
+        nearbyLandmark: { type: string }
+        phone: { type: string }
+        whatsapp: { type: string }
+        alternatePhone: { type: string }
+        mapsLink: { type: string }
+        lat: { type: number }
+        lng: { type: number }
+        logoUrl: { type: string }
+        description: { type: string }
+        yearEstablished: { type: integer }
+
+    EmployerListResponse:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmployerProfile"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    EmployerStats:
+      type: object
+      required: [activeJobs, totalApplicationsReceived, dailyOffersUsed, dailyOffersLimit, monthlyOffersUsed, monthlyOffersLimit, shortlistCount, pendingApplications]
+      properties:
+        activeJobs: { type: integer }
+        totalApplicationsReceived: { type: integer }
+        dailyOffersUsed: { type: integer }
+        dailyOffersLimit: { type: integer }
+        monthlyOffersUsed: { type: integer }
+        monthlyOffersLimit: { type: integer }
+        shortlistCount: { type: integer }
+        pendingApplications: { type: integer }
+
+    ShortlistEntry:
+      type: object
+      required: [id, employerId, candidateId, createdAt]
+      properties:
+        id: { type: integer }
+        employerId: { type: integer }
+        candidateId: { type: integer }
+        createdAt: { type: string }
+
+    # Jobs
+    Job:
+      type: object
+      required: [id, employerId, title, specialization, governorate, city, jobType, isEmergency, status, createdAt]
+      properties:
+        id: { type: integer }
+        employerId: { type: integer }
+        employerName: { type: ["string", "null"] }
+        title: { type: string }
+        specialization: { type: string }
+        description: { type: ["string", "null"] }
+        governorate: { type: string }
+        city: { type: string }
+        jobType: { type: string }
+        shift: { type: ["string", "null"] }
+        salaryMin: { type: ["integer", "null"] }
+        salaryMax: { type: ["integer", "null"] }
+        isEmergency: { type: boolean }
+        status: { type: string, enum: [active, closed, filled] }
+        applicantCount: { type: ["integer", "null"] }
+        lat: { type: ["number", "null"] }
+        lng: { type: ["number", "null"] }
+        createdAt: { type: string }
+
+    JobInput:
+      type: object
+      required: [title, specialization, governorate, city, jobType]
+      properties:
+        title: { type: string }
+        specialization: { type: string }
+        description: { type: string }
+        governorate: { type: string }
+        city: { type: string }
+        jobType: { type: string }
+        shift: { type: string }
+        salaryMin: { type: integer }
+        salaryMax: { type: integer }
+        isEmergency: { type: boolean }
+        lat: { type: number }
+        lng: { type: number }
+
+    JobUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        specialization: { type: string }
+        status: { type: string, enum: [active, closed, filled] }
+        shift: { type: string }
+        salaryMin: { type: integer }
+        salaryMax: { type: integer }
+
+    EmergencyShiftInput:
+      type: object
+      required: [specialization, governorate, city, durationHours]
+      properties:
+        specialization: { type: string }
+        governorate: { type: string }
+        city: { type: string }
+        durationHours: { type: integer }
+        notes: { type: string }
+        lat: { type: number }
+        lng: { type: number }
+
+    JobListResponse:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Job"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    # Applications
+    Application:
+      type: object
+      required: [id, jobId, candidateId, status, createdAt]
+      properties:
+        id: { type: integer }
+        jobId: { type: integer }
+        candidateId: { type: integer }
+        candidateName: { type: ["string", "null"] }
+        jobTitle: { type: ["string", "null"] }
+        employerName: { type: ["string", "null"] }
+        coverLetter: { type: ["string", "null"] }
+        status: { type: string, enum: [pending, reviewing, accepted, rejected] }
+        createdAt: { type: string }
+
+    ApplicationInput:
+      type: object
+      required: [jobId]
+      properties:
+        jobId: { type: integer }
+        coverLetter: { type: string }
+
+    ApplicationStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [reviewing, accepted, rejected] }
+
+    # Offers
+    Offer:
+      type: object
+      required: [id, employerId, candidateId, message, status, createdAt]
+      properties:
+        id: { type: integer }
+        employerId: { type: integer }
+        employerName: { type: ["string", "null"] }
+        candidateId: { type: integer }
+        candidateName: { type: ["string", "null"] }
+        message: { type: string }
+        status: { type: string, enum: [pending, accepted, rejected] }
+        createdAt: { type: string }
+
+    OfferInput:
+      type: object
+      required: [candidateId, message]
+      properties:
+        candidateId: { type: integer }
+        message: { type: string }
+
+    OfferResponse:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [accepted, rejected] }
+
+    # Notifications
+    Notification:
+      type: object
+      required: [id, userId, type, title, body, isRead, createdAt]
+      properties:
+        id: { type: integer }
+        userId: { type: integer }
+        type: { type: string }
+        title: { type: string }
+        body: { type: string }
+        isRead: { type: boolean }
+        link: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    # Packages
+    Package:
+      type: object
+      required: [id, name, nameAr, targetRole, priceUsd, dailyLimit, monthlyLimit]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        nameAr: { type: string }
+        targetRole: { type: string, enum: [candidate, employer] }
+        priceUsd: { type: number }
+        dailyLimit: { type: integer }
+        monthlyLimit: { type: integer }
+        features: { type: ["string", "null"] }
+
+    PackageSubscriptionInput:
+      type: object
+      required: [packageId]
+      properties:
+        packageId: { type: integer }
+
+    UserSubscription:
+      type: object
+      required: [id, userId, packageId, packageName, packageNameAr, startsAt, endsAt, isActive]
+      properties:
+        id: { type: integer }
+        userId: { type: integer }
+        packageId: { type: integer }
+        packageName: { type: string }
+        packageNameAr: { type: string }
+        dailyLimit: { type: integer }
+        monthlyLimit: { type: integer }
+        startsAt: { type: string }
+        endsAt: { type: string }
+        isActive: { type: boolean }
+
+    # Admin
+    AdminStats:
+      type: object
+      required: [totalUsers, totalCandidates, totalEmployers, totalJobs, totalApplications, successfulMatches, newUsersToday, newUsersThisMonth, activeSubscriptions]
+      properties:
+        totalUsers: { type: integer }
+        totalCandidates: { type: integer }
+        totalEmployers: { type: integer }
+        totalJobs: { type: integer }
+        totalApplications: { type: integer }
+        successfulMatches: { type: integer }
+        newUsersToday: { type: integer }
+        newUsersThisMonth: { type: integer }
+        activeSubscriptions: { type: integer }
+
+    AdminUserListResponse:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    VerificationInput:
+      type: object
+      required: [verified]
+      properties:
+        verified: { type: boolean }
+        badge: { type: string }
+        notes: { type: string }
+
+    SubscriptionBreakdown:
+      type: object
+      required: [packageId, packageName, packageNameAr, count]
+      properties:
+        packageId: { type: integer }
+        packageName: { type: string }
+        packageNameAr: { type: string }
+        count: { type: integer }
+
+    RegionalActivity:
+      type: object
+      required: [governorate, candidateCount, employerCount, jobCount, applicationCount]
+      properties:
+        governorate: { type: string }
+        candidateCount: { type: integer }
+        employerCount: { type: integer }
+        jobCount: { type: integer }
+        applicationCount: { type: integer }
