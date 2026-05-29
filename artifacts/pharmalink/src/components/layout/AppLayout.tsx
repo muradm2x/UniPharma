@@ -63,38 +63,47 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 right-0 z-50 w-64 bg-sidebar border-l border-sidebar-border transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"}`}>
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+          {/* Logo */}
+          <div className="flex items-center justify-between px-5 h-16 border-b border-sidebar-border">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">P</span>
-              </div>
-              <span className="font-bold text-lg text-sidebar-foreground">PharmLink</span>
+              <span className="font-black text-xl tracking-tight text-white">Uni<span className="text-sidebar-primary">Pharma</span></span>
             </Link>
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
+            <Button variant="ghost" size="icon" className="lg:hidden text-sidebar-foreground hover:bg-sidebar-accent" onClick={() => setSidebarOpen(false)}>
               <X className="w-4 h-4" />
             </Button>
           </div>
 
-          <div className="p-3 border-b border-sidebar-border">
-            <div className="text-xs text-muted-foreground mb-1">مرحباً،</div>
-            <div className="font-semibold text-sidebar-foreground text-sm truncate">{user?.fullName}</div>
-            <div className="text-xs text-muted-foreground">
-              {user?.role === "candidate" ? "صيدلاني" : user?.role === "employer" ? "صيدلية" : "مسؤول"}
+          {/* User info */}
+          <div className="px-4 py-4 border-b border-sidebar-border">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-primary/20 flex items-center justify-center text-sidebar-primary font-bold text-sm flex-shrink-0">
+                {user?.fullName?.charAt(0) ?? "U"}
+              </div>
+              <div className="min-w-0">
+                <div className="font-semibold text-sidebar-foreground text-sm truncate">{user?.fullName}</div>
+                <div className="text-xs text-sidebar-foreground/50 mt-0.5">
+                  {user?.role === "candidate" ? "باحث عن عمل" : user?.role === "employer" ? "صاحب صيدلية" : "مسؤول النظام"}
+                </div>
+              </div>
             </div>
           </div>
 
-          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = location === item.href || location.startsWith(item.href + "/");
               return (
                 <Link key={item.href} href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground hover:bg-sidebar-accent/50"}`}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+                  }`}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <span className={isActive ? "text-sidebar-primary" : ""}>{item.icon}</span>
                   <span>{item.label}</span>
                   {item.label === "الإشعارات" && unreadCount > 0 && (
-                    <Badge className="mr-auto text-xs" variant="destructive">{unreadCount}</Badge>
+                    <Badge className="mr-auto text-xs px-1.5 h-5" variant="destructive">{unreadCount}</Badge>
                   )}
                 </Link>
               );
@@ -102,7 +111,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="p-3 border-t border-sidebar-border">
-            <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive" onClick={logout} data-testid="button-logout">
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 text-sidebar-foreground/60 hover:text-red-400 hover:bg-red-500/10 rounded-xl"
+              onClick={logout}
+              data-testid="button-logout"
+            >
               <LogOut className="w-4 h-4" />
               تسجيل الخروج
             </Button>

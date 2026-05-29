@@ -61,11 +61,10 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary mb-4">
-            <span className="text-primary-foreground font-black text-2xl">P</span>
-          </div>
-          <h1 className="text-3xl font-bold text-foreground">PharmLink</h1>
-          <p className="text-muted-foreground mt-1">وصلة الصيادلة</p>
+          <h1 className="text-3xl font-black tracking-tight" style={{ background: "linear-gradient(135deg, hsl(217,91%,45%), hsl(199,89%,48%))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            UniPharma
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm">منصة التوظيف الصيدلي</p>
         </div>
 
         <Card>
