@@ -1,0 +1,208 @@
+1. **صاحب صيدلية / مدير مجموعة:** (أبحث عن صيادلة، مساعدين، أو طاقم إداري لصيدليتي).
+2. عدد الفروع : اذا كان اكثر من فرع (مجموعة) يتم اخذ هذه البيانات للمف التعريفي 
+
+1. البيانات الأساسية (Main Info)
+
+اسم المجموعة — **Group Name**
+
+اسم المسؤول — **Owner / Manager Name**
+
+البريد الإلكتروني (من جوجل) — **Email (Google Account)**
+
+رقم الهاتف — **Phone Number**
+
+واتساب — **WhatsApp Number**
+
+رقم بديل (اختياري) — **Alternative Phone (Optional)**
+
+سنة التأسيس — **Year Established**
+
+**2. المقر الرئيسي (اختياري لكن مهم)**
+
+**المحافظة — Governorate**
+
+**المدينة — City**
+
+**العنوان بالتفصيل — Detailed Address**
+
+**تحديد الموقع على الخريطة — Select Location on Map**
+
+**خط العرض — Latitude**
+
+**4. بيانات الفروع (Core System)**
+
+**لكل فرع يتم إدخال:**
+
+1. البيانات الأساسية
+
+اسم الصيدلية — **Pharmacy Name**
+
+اسم المسؤول — **Owner / Manager Name**
+
+البريد الإلكتروني (من جوجل) — **Email (Google Account)**
+
+رقم الهاتف — **Phone Number**
+
+واتساب — **WhatsApp Number**
+
+رقم بديل (اختياري) — **Alternative Phone (Optional)**
+
+رابط الموقع (اختياري) — **Google Maps Link (Optional)**
+
+2. الموقع الجغرافي
+
+المحافظة — **Governorate**
+
+المدينة / المنطقة — **City / Area**
+
+العنوان بالتفصيل — **Detailed Address**
+
+علامة مميزة قريبة — **Nearby Landmark**
+
+3. تحديد الموقع على الخريطة
+
+اختيار الموقع على الخريطة — **Select Location on Map**
+
+خط العرض — **Latitude**
+
+خط الطول — **Longitude**
+
+8. بيانات إضافية
+
+صور للصيدلية — **Pharmacy Images**
+
+وصف الصيدلية — **Pharmacy Description**
+
+واذا كانت فرع واحد (صيدلية فردية )
+
+1. البيانات الأساسية
+
+اسم الصيدلية — **Pharmacy Name**
+
+اسم المسؤول — **Owner / Manager Name**
+
+البريد الإلكتروني (من جوجل) — **Email (Google Account)**
+
+رقم الهاتف — **Phone Number**
+
+واتساب — **WhatsApp Number**
+
+رقم بديل (اختياري) — **Alternative Phone (Optional)**
+
+2. الموقع الجغرافي
+
+المحافظة — **Governorate**
+
+المدينة / المنطقة — **City / Area**
+
+العنوان بالتفصيل — **Detailed Address**
+
+علامة مميزة قريبة — **Nearby Landmark**
+
+3. تحديد الموقع على الخريط
+
+رابط الموقع (اختياري) — **Google Maps Link (Optional)**
+
+8. بيانات إضافية
+
+لوجو الصيدلية — **Pharmacy Logo**
+
+صور للصيدلية — **Pharmacy Images**
+
+وصف الصيدلية — **Pharmacy Description**
+
+1. **باحث عن عمل / كادر صيدلي:** (أنا صيدلي، مساعد، مسؤول تجميل.. وأبحث عن وظيفة أو شفتات).
+
+               يتم اخذ البيانات الاتيه 
+
+1. البيانات الأساسية
+
+الاسم بالكامل — **Full Name**
+
+البريد الإلكتروني (من جوجل) — **Email (Google Account)**
+
+رقم الهاتف — **Phone Number**
+
+واتساب — **WhatsApp Number**
+
+تاريخ الميلاد — **Date of Birth**
+
+النوع — **Gender (Optional)**
+
+📍 2. الموقع
+
+المحافظة — **Governorate**
+
+المدينة / المنطقة — **City / Area**
+
+العنوان بالتفصيل — **Detailed Address**
+
+🎓 3. التعليم
+
+الجامعة — **University**
+
+الكلية — **Faculty (Pharmacy)**
+
+سنة التخرج — **Graduation Year**
+
+التقدير (اختياري) — **Grade (Optional)**
+
+💼 4. الخبرة العملية
+
+عدد سنوات الخبرة — **Years of Experience**
+
+أماكن العمل السابقة — **Previous Workplaces**
+
+المسمى الوظيفي — **Job Title (صيدلي - م صيدلي - مدير فرع - كاشير)**
+
+🧠 5. المهارات
+
+مهارات صيدلانية — **Pharmacy Skills**
+
+مهارات الكمبيوتر — **Computer Skills**
+
+مهارات التواصل — **Communication Skills**
+
+📜 6. الشهادات (اختياري)
+
+شهادات إضافية — **Certifications**
+
+كورسات — **Courses**
+
+⏰ 7. تفضيلات العمل
+
+متاح للعمل الآن — **Available for Work Now**
+
+نوع الشيفت — **Preferred Shift Type** صباحي — **Morning**
+
+مسائي — **Evening**
+
+نايت — **Night**
+
+نوع العمل — **Job Type**
+
+(دوام كامل / جزئي) — *(Full-time / Part-time)*
+
+📏 8. تفضيل المسافة (ميزة قوية)
+
+أقصى مسافة للعمل (كم) — **Max Distance (KM)**
+
+يفضل العمل بالقرب — **Prefer Nearby Jobs**
+
+📄 9. السيرة الذاتية
+
+رفع ملف CV (PDF) — **Upload CV (PDF)**
+
+🖼️ 10. بيانات إضافية
+
+صورة شخصية — **Profile Picture**
+
+نبذة شخصية — **Personal Summary**
+
+🔔 11. إعدادات الحساب
+
+تفعيل الإشعارات — **Enable Notifications**
+
+طريقة التواصل المفضلة — **Preferred Contact Method**
+
+(واتساب / اتصال) — *(WhatsApp / Call*
