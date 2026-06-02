@@ -1,0 +1,15 @@
+# Netlify configuration for UniPharma
+
+# Redirect all API calls to the backend hosted on Render
+[[redirects]]
+  from = "/api/*"
+  to = "https://unipharma.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback – all other routes serve index.html (required for React Router)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
