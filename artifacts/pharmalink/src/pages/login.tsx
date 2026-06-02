@@ -19,6 +19,18 @@ const loginSchema = z.object({
 });
 type LoginForm = z.infer<typeof loginSchema>;
 
+async function readJsonOrThrow(res: Response) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    const hint = res.status === 404
+      ? "الـ API غير متاح. تأكد إن السيرفر شغال على 8080 أو اضبط API_URL."
+      : "رد غير متوقع من السيرفر.";
+    throw new Error(`${hint} (HTTP ${res.status})`);
+  }
+}
+
 export default function LoginPage() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
@@ -39,7 +51,7 @@ export default function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
-      const data = await res.json();
+      const data = await readJsonOrThrow(res);
       if (!res.ok) throw new Error(data.error ?? "حدث خطأ");
       login(data.token, data.user);
       if (data.user.role === "candidate") setLocation("/candidate/dashboard");
@@ -60,7 +72,7 @@ export default function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential }),
       });
-      const data = await res.json();
+      const data = await readJsonOrThrow(res);
       if (res.status === 422 && data.error === "ROLE_REQUIRED") {
         // New google user — redirect to register with pre-filled data
         sessionStorage.setItem("google_pending", JSON.stringify({ credential, ...data }));

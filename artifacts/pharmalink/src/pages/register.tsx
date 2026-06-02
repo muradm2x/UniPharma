@@ -33,6 +33,18 @@ const emailSchema = z.object({
 type PhoneForm = z.infer<typeof phoneSchema>;
 type EmailForm = z.infer<typeof emailSchema>;
 
+async function readJsonOrThrow(res: Response) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    const hint = res.status === 404
+      ? "الـ API غير متاح. تأكد إن السيرفر شغال على 8080 أو اضبط API_URL."
+      : "رد غير متوقع من السيرفر.";
+    throw new Error(`${hint} (HTTP ${res.status})`);
+  }
+}
+
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<"candidate" | "employer">("candidate");
@@ -70,7 +82,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...body, role }),
       });
-      const data = await res.json();
+      const data = await readJsonOrThrow(res);
       if (!res.ok) throw new Error(data.error ?? "حدث خطأ في التسجيل");
       login(data.token, data.user);
       setLocation(data.user.role === "candidate" ? "/candidate/dashboard" : "/employer/dashboard");
@@ -90,7 +102,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential: googlePending.credential, role }),
       });
-      const data = await res.json();
+      const data = await readJsonOrThrow(res);
       if (!res.ok) throw new Error(data.error ?? "حدث خطأ");
       sessionStorage.removeItem("google_pending");
       login(data.token, data.user);
@@ -110,7 +122,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential }),
       });
-      const data = await res.json();
+      const data = await readJsonOrThrow(res);
       if (res.status === 422 && data.error === "ROLE_REQUIRED") {
         setGooglePending({ credential, email: data.email, fullName: data.fullName });
         return;

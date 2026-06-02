@@ -198,6 +198,10 @@
     @apply border-border;
   }
 
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Tajawal', sans-serif;
@@ -206,6 +210,12 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Tajawal', sans-serif;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
   }
 }
 
