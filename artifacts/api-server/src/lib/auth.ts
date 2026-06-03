@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { db, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
-const SESSION_SECRET = process.env.SESSION_SECRET ?? "pharmalink-dev-secret";
+const SESSION_SECRET = process.env.SESSION_SECRET ?? "unipharma-dev-secret";
 
 export function hashPassword(password: string): string {
   return crypto.createHmac("sha256", SESSION_SECRET).update(password).digest("hex");

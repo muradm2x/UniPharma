@@ -5,7 +5,7 @@ UniPharma is a platform that connects **pharmacy owners** with **pharmacy profes
 ## Tech stack
 
 - **Monorepo**: pnpm workspaces
-- **Frontend**: Vite + React + Tailwind + Radix UI (`artifacts/pharmalink`)
+- **Frontend**: Vite + React + Tailwind + Radix UI (`artifacts/unipharma`)
 - **Backend**: Node.js + Express + Drizzle + Postgres (`artifacts/api-server`)
 - **Shared libs**: `lib/db`, `lib/api-zod`, `lib/api-client-react`
 
@@ -28,7 +28,7 @@ pnpm install
 Create env files from examples:
 
 - `artifacts/api-server/.env.example` → create your own env in the way you prefer (PowerShell, `.env` + loader, CI secrets, etc.)
-- `artifacts/pharmalink/.env.example` → create `artifacts/pharmalink/.env` for Vite
+- `artifacts/unipharma/.env.example` → create `artifacts/unipharma/.env` for Vite
 
 ## Run (dev)
 
@@ -51,7 +51,7 @@ PowerShell example:
 $env:PORT="5173"
 $env:BASE_PATH="/"
 $env:VITE_GOOGLE_CLIENT_ID="your-google-client-id"
-pnpm --filter @workspace/pharmalink dev
+pnpm --filter @workspace/unipharma dev
 ```
 
 ## Workspace scripts

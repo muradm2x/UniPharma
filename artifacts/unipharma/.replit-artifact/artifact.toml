@@ -2,7 +2,7 @@ kind = "web"
 previewPath = "/"
 title = "PharmLink - منصة التوظيف الصيدلي"
 version = "1.0.0"
-id = "artifacts/pharmalink"
+id = "artifacts/unipharma"
 router = "path"
 
 [[integratedSkills]]
@@ -15,16 +15,16 @@ paths = ["/"]
 localPort = 5173
 
 [services.development]
-run = "pnpm --filter @workspace/pharmalink run dev"
+run = "pnpm --filter @workspace/unipharma run dev"
 
 [services.env]
 PORT = "5173"
 BASE_PATH = "/"
 
 [services.production]
-publicDir = "artifacts/pharmalink/dist/public"
+publicDir = "artifacts/unipharma/dist/public"
 serve = "static"
-build = ["pnpm", "--filter", "@workspace/pharmalink", "run", "build"]
+build = ["pnpm", "--filter", "@workspace/unipharma", "run", "build"]
 
 [[services.production.rewrites]]
 from = "/*"

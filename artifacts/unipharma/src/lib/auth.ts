@@ -14,8 +14,8 @@ export interface AuthState {
   user: AuthUser | null;
 }
 
-const TOKEN_KEY = "pharmalink_token";
-const USER_KEY = "pharmalink_user";
+const TOKEN_KEY = "unipharma_token";
+const USER_KEY = "unipharma_user";
 
 export function getStoredAuth(): AuthState {
   try {
