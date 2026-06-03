@@ -30,6 +30,10 @@ Create env files from examples:
 - `artifacts/api-server/.env.example` → create your own env in the way you prefer (PowerShell, `.env` + loader, CI secrets, etc.)
 - `artifacts/unipharma/.env.example` → create `artifacts/unipharma/.env` for Vite
 
+For Netlify deployments, set `API_URL` to the backend origin, for example
+`https://your-api-service.onrender.com`. The web app proxies `/api/*` through a
+Netlify function.
+
 ## Run (dev)
 
 ### Backend (API)
@@ -50,6 +54,7 @@ PowerShell example:
 ```powershell
 $env:PORT="5173"
 $env:BASE_PATH="/"
+$env:VITE_API_URL="http://localhost:8080"
 $env:VITE_GOOGLE_CLIENT_ID="your-google-client-id"
 pnpm --filter @workspace/unipharma dev
 ```
@@ -58,4 +63,3 @@ pnpm --filter @workspace/unipharma dev
 
 - `pnpm run build`: typecheck + build all packages
 - `pnpm run typecheck`: typecheck libs + artifacts
-
